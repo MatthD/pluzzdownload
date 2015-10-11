@@ -11,5 +11,8 @@
     "url": "https://matthias_dieudonne@bitbucket.org/matthias_dieudonne/pluzzdownloader.git"
   },
   "author": "Matthias Dieudonne",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "scrap": "^0.1.0"
+  }
 }
