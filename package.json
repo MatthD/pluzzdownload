@@ -13,6 +13,7 @@
   "author": "Matthias Dieudonne",
   "license": "ISC",
   "dependencies": {
+    "extract-dates": "^1.0.3",
     "scrap": "^0.1.0"
   }
 }

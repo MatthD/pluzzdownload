@@ -6,7 +6,7 @@ var title,
     date,
     filename;
  
-scrap('http://pluzz.francetv.fr/videos/info_soir_,128915541.html', function(err, $) {
+scrap('http://pluzz.francetv.fr/videos/info_soir_,129340833.html', function(err, $) {
   var title = $('#diffusion-titre').text(),
       subtitle = $("h1 .diffusion-paragraphe.soustitre").text().replace(/[^\w\s]/gi, '').trim(),
       date = $("h1").text();
