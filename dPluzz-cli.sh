@@ -121,10 +121,10 @@ echo -e "$ROSE""-->TRAITEMENT DU JSON""$NORMAL"
 DATE="$(echo "${JSON}" | sed 's+.*date_debut..\"\([^\"]*\)\".*+\1+g')"
 PROG="$(echo "${JSON}" | sed 's+.*code_programme..\"\([^\"]*\)\".*+\1+g')"
 M3U="$(echo "${JSON}" | sed 's+.*url..\"\([^\"]*m3u8\)\".*+\1+g')"
-echo "DATE : " $DATE
+echo "M3U : " $M3U
 #Recuperation du master M3U et traitement
 M3U2="$(wget -q -U "'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:19.0) Gecko/20100101 Firefox/19.0'" "${M3U}" -O - | grep -E "^http.*.ts*" | tail -1)"
-
+echo M3U2 $M3U2
 #Ecriture du log en mode debug
 if [[ "${IsDebug}" == "True" ]]
 then
