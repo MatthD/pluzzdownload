@@ -40,7 +40,7 @@ usage: $(basename $0) [OPTIONS] URL
 
 OPTIONS:
 -f        utilise ffmpeg au lieu de avconv
--m        convertir l'audio en MP3
+-m        convertir laudio en MP3
 -d DIR    dossier de destination
 -u URL    adresse de la vidéo
 -h        affiche cette aide
@@ -111,7 +111,7 @@ sleep 1
 #Recuperation de l' ID de l' emission
 UserAgent='Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:19.0) Gecko/20100101 Firefox/19.0'
 ID=$(wget -q -O - -U "${UserAgent}" "${URL}" | grep -oE "data-diffusion=.[0-9]*." | head -1 | grep -oE "[0-9]*")
-
+echo "ID " {$ID}
 #wget du json conteant les infos
 echo -e "$ROSE""-->RECUPERATION DU JSON""$NORMAL"
 JSON="$(wget -q -U "${UserAgent}" "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=${ID}&catalogue=Pluzz&callback=webserviceCallback_${ID}" -O - | sed 's+\\/+/+g')"
@@ -121,7 +121,7 @@ echo -e "$ROSE""-->TRAITEMENT DU JSON""$NORMAL"
 DATE="$(echo "${JSON}" | sed 's+.*date_debut..\"\([^\"]*\)\".*+\1+g')"
 PROG="$(echo "${JSON}" | sed 's+.*code_programme..\"\([^\"]*\)\".*+\1+g')"
 M3U="$(echo "${JSON}" | sed 's+.*url..\"\([^\"]*m3u8\)\".*+\1+g')"
-
+echo "DATE : " $DATE
 #Recuperation du master M3U et traitement
 M3U2="$(wget -q -U "'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:19.0) Gecko/20100101 Firefox/19.0'" "${M3U}" -O - | grep -E "^http.*.ts*" | tail -1)"
 
