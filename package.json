@@ -15,6 +15,7 @@
   "dependencies": {
     "JSONSelect": "^0.4.0",
     "avconv": "^3.0.1",
+    "express": "^4.13.3",
     "extract-dates": "^1.0.3",
     "fluent-ffmpeg": "^2.0.1",
     "kuler": "0.0.0",
