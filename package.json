@@ -16,8 +16,10 @@
     "JSONSelect": "^0.4.0",
     "avconv": "^3.0.1",
     "extract-dates": "^1.0.3",
-    "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "^2.0.1",
+    "kuler": "0.0.0",
     "request": "^2.65.0",
+    "request-promise": "^1.0.1",
     "scrap": "^0.1.0"
   }
 }
