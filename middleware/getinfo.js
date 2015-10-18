@@ -41,6 +41,7 @@ obj.get = function(id,res,io,callback) {
       res.render("index.html" , obj);
       return;
     }
+    json_info.image = "http://pluzz.francetv.fr" + json_emission["image"];
     json_info.titre_complet = json_emission["titre"];
     json_info.sous_titre_complet = json_emission["sous_titre"];
     json_info.titre_emission = json_emission["code_programme"].replace( /_/g , '.');
@@ -92,6 +93,7 @@ obj.get = function(id,res,io,callback) {
       json_info.m3uHD = json_info.m3uHD[json_info.m3uHD.length-1]
       message =  json_info.titre_complet + " / " + json_info.sous_titre_complet ;
       io.sockets.emit('update', { message: message });
+      io.sockets.emit('update', { image: json_info.image });
       io.sockets.emit('update', { toast : "Téléchargement des infos" });
       callback(json_info);
     })
