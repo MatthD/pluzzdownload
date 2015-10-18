@@ -15,7 +15,8 @@ var express = require('express'), // Surveille les connexion a l'appli
     server = require('http').Server(app),
     obj = {},
     io = require('socket.io')(server),
-    temp_folder = process.env.HOME + "/tmp"; // repertoire temporaire
+    message ,
+    temp_folder = process.env.HOME + "/tmp/"; // repertoire temporaire
 
 
 // Ecoute sur le port 3000
@@ -45,6 +46,7 @@ app.get('/', function (req, res) {
   res.render("index.html");
 });
 
+
 // Ecoute si quelqu'un envoie quelque chose en mode POST
 app.post('/', function (req, res) {
 
@@ -56,27 +58,30 @@ app.post('/', function (req, res) {
     return;
   }
   // Si tout es bon on lance les fonctions getID,getInfo,getVideo
-  lauchTraitement(req.body.lienPluzz, res);
+  lauchTraitement(req.body.lienPluzz, res , io);
 });
 
 io.on('connection', function (socket) {
-// socket.on('my other event', function (data) {
-//   console.log(data);
-//   });
+  console.log("une connexion");
+  socket.emit("update" , "test");
+  socket.emit("update" , "test2");
 });
 
 
-var lauchTraitement = function(url,res){
+var lauchTraitement = function(url,res,io){
 
   // Force url à être String
   url = url.toString();
 
+
   // Recupération de l'ID
-  getId.get(url , res , function(id){
+  getId.get(url , res , io, function(id){
+
+    io.sockets.emit('update', { toast : "Identifiant de vidéo récupéré ... " });
     console.log("ID vidéo : " , kuler(id , "orange"));
 
     // Recupération de des Infos (titre , date , url m3U8 ...)
-    getInfo.get(id, res, function(info){
+    getInfo.get(id, res, io, function(info){
       info.destination = temp_folder;
       console.log("Informations vidéo : " , kuler(info , "cyan"));
 

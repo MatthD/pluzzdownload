@@ -7,9 +7,10 @@ var scrap = require('scrap'),
     obj   = {};
 
 
-obj.get = function(url,res,callback) {
-  var id;
-  console.log("url : " , url);
+obj.get = function(url,res,io,callback) {
+  var id,
+      message;
+
   // Recherche du noeuf contenant l'attribut par jQuery , puis récupére la valeur de l'attribut
   scrap(url, function(err, $) {
     id = $("div[data-diffusion]").first().attr("data-diffusion");
@@ -21,6 +22,9 @@ obj.get = function(url,res,callback) {
       res.render("index.html" , obj);
       return;
     }
+    message = "Identifiant de vidéo récupéré ... ";
+    console.log("message" , message);
+    io.sockets.emit('update', { toast : message });
     callback(id);
   });
 }; 
