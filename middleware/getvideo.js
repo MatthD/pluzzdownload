@@ -8,7 +8,8 @@ var avconv = require("avconv"),
     obj = {};
 
 
-obj.get = function(info,callback){
+obj.get = function(info,res,io,callback){
+  console.log("io : " ,  io);
   //Parametres avconv Video/Audio , process.env.HOME correspong à /home/user/
   var avconv_params = [
    "-y" , "-i" , info.m3uHD ,"-strict" , "experimental"  , "-vcodec" , "libx264" , "-acodec" , "mp3" , info.destination + info.filename_emission + ".mp4"
@@ -17,7 +18,7 @@ obj.get = function(info,callback){
   // Creation du repertoire info.destination s'il il n'existe pas
   mkdirp(info.destination, function (err) {
     if (err) {
-      console.error(kuler("Probléme lors de la création du repertoire : " err , "red"))
+      console.error(kuler("Probléme lors de la création du repertoire : " + err , "red"))
     }
   });
 
@@ -27,6 +28,8 @@ obj.get = function(info,callback){
   stream.on('progress', function(progress) {
     // Affiche le telechargement en cours en % a 2 chiffres prés aprés la virgule
     process.stdout.write(kuler(" ... Téléchargement " + (progress*100).toFixed(2) + "% \r" , "orange"));
+    //Envoi le % de progression à a page html
+    io.sockets.emit('update', { progress: progress });
   });
 };
 

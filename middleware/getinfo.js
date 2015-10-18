@@ -1,12 +1,12 @@
 /*
-* GET json & m3u8 vidoe url
+* GET json & m3u8 video url
 */
 
 var request = require('request-promise'),
     JSONSelect = require("JSONSelect"),
     obj = {};
 
-obj.get = function(id,callback) {
+obj.get = function(id,res,callback) {
   var json_url = "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=" + id + "&catalogue=Pluzz&callback=webserviceCallback_" + id,
       pattern = /\((.+?)\)/g,
       match,
@@ -63,15 +63,12 @@ obj.get = function(id,callback) {
     })
     .catch(function(err){
       // m3u8HD n'est pas téléchargeable
-      console.log("Aucune résolution n'est dispo: " ,err);
+      console.error(kuler("Aucune résolution n'est dispo: " + err , "red"));
     })
   })
   .catch(function(err){
     //JSON n'est pas télécheargeable
-    console.log("Impossible de récuperer les infos , erreur : " ,err);
-
-    //Quite Node.js avec erreur code 1
-    process.exit(1);
+    console.error(kuler("Impossible de récuperer les infos , erreur : " + err , "red"));
   })
 
 }; 
