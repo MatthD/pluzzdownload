@@ -21,7 +21,7 @@ obj.get = function(info,res,io,callback){
     console.log("m3u " , info.m3uHD);
 
   var avconv_params = [
-   "-y" , "-i"  , info.m3uHD ,"-strict" , "experimental"  , "-vcodec" , "libx264" , "-acodec" , "mp3"  , info.destination + info.filename_emission + ".mp4"
+   "-y" , "-i"  , info.m3uHD ,"-strict" , "experimental"  , '-f' , 'matroska' , info.destination + info.filename_emission + ".mkv"
   ];
 
   // Creation du repertoire info.destination s'il il n'existe pas

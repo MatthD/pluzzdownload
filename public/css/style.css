@@ -1,0 +1,21 @@
+/*
+* Style CSS de PLUZZDownloader
+*/
+
+h1{
+  text-align: center;
+  color: #EE6E73;
+}
+
+.hide{
+  display: none;
+}
+
+.bouttonTelechargement{
+  text-align: center;
+}
+
+.toasting{
+  background: #60BECA;
+  border-radius: 30px;
+}
