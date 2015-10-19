@@ -5,11 +5,21 @@
 var avconv = require("avconv"),
     kuler  = require("kuler"),
     mkdirp = require('mkdirp'),
-    obj = {};
+    obj = {},
+    proxy;
+
+
 
 
 obj.get = function(info,res,io,callback){
   //Parametres avconv Video/Audio , process.env.HOME correspong à /home/user/
+
+    if(process.env.HTTP_PROXY){
+      proxy = process.env.HTTP_PROXY;
+      info.m3uHD = info.m3uHD + " socks=" +proxy ;
+    }
+    console.log("m3u " , info.m3uHD);
+
   var avconv_params = [
    "-y" , "-i"  , info.m3uHD ,"-strict" , "experimental"  , "-vcodec" , "libx264" , "-acodec" , "mp3"  , info.destination + info.filename_emission + ".mp4"
   ];
@@ -34,7 +44,9 @@ obj.get = function(info,res,io,callback){
 
   stream.once('exit', function(exitCode, signal, metadata) {
     io.sockets.emit('update', { toast: "Video Récupérée & Convertie" });
-    res.download(info.destination + info.filename_emission + ".mp4"); // name of archive
+    res.download(info.destination + info.filename_emission + ".mp4", function(){
+      fs.unlink(info.destination + info.filename_emission + ".mp4");
+    }); // name of archive
     process.stdout.write('\r');
     console.log("Video Téléchargée avec succés");
   });

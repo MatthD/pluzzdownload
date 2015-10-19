@@ -9,10 +9,27 @@ var scrap = require('scrap'),
 
 obj.get = function(url,res,io,callback) {
   var id,
-      message;
+      message,
+      proxy,
+      options;
+
+  if(process.env.HTTP_PROXY){
+    proxy = process.env.HTTP_PROXY;
+    options = {
+      url : url ,
+      proxy : proxy
+    }
+  }
+  else{
+    options = {
+      url : url
+    }
+  }
+
+  console.log(options);
 
   // Recherche du noeuf contenant l'attribut par jQuery , puis récupére la valeur de l'attribut
-  scrap(url, function(err, $) {
+  scrap({url : url , proxy : proxy}, function(err, $) {
     id = $("div[data-diffusion]").first().attr("data-diffusion");
 
     // Si on ne trouve pas l'ID de la video
