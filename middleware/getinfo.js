@@ -36,8 +36,8 @@ obj.get = function(id,res,io,callback) {
     if(!(json_emission ||  json_emission["code_programme"] ||
       json_emission["sous_titre"] || json_emission["diffusion"]["date_debut"])){
 
-      obj.error = "Les infos de cette video ne sont pas récuperables";
-      console.error(kuler("Impossible de récupérer le json de :  " + id  , "red"));
+      obj.error = "Les infos de la vidéo ne sont pas récupérables";
+      console.error(kuler("Impossible de récupérer le JSON de :  " + id  , "red"));
       res.render("index.html" , obj);
       return;
     }
@@ -54,8 +54,8 @@ obj.get = function(id,res,io,callback) {
 
     // Si le lien m3U n'est pas dispo
     if(!json_info.m3u){
-      obj.error = "Le liens de la video na pu être trouvé :(";
-      console.error(kuler("Impossible de récup le m3u de la video :  " + json_info  , "red"));
+      obj.error = "Le lien de la vidéo n'a pu être trouvé :(";
+      console.error(kuler("Impossible de récupérer le m3u de la vidéo :  " + json_info  , "red"));
       res.render("index.html" , obj);
       return;
     }
@@ -83,8 +83,8 @@ obj.get = function(id,res,io,callback) {
 
       // S'il ne reste pas de lien , la HD n'est pas dispo
       if(json_info.m3uHD.length < 1){
-        obj.error = "Le liens n'est pas dispo en HD , traitement en SD ... ";
-        console.info(kuler("le m3uHD n'est pas dispo  " + json_info.m3uHD  , "red"));
+        obj.error = "Le lien n'est pas disponible en HD , traitement en SD ... ";
+        console.info(kuler("Le m3uHD n'est pas disponible  " + json_info.m3uHD  , "red"));
         // res.render("index.html" , obj);
         return;
       }
@@ -99,12 +99,12 @@ obj.get = function(id,res,io,callback) {
     })
     .catch(function(err){
       // m3u8HD n'est pas téléchargeable
-      console.error(kuler("Erreur lors de la recup de la meilleur resolution: " + err , "red"));
+      console.error(kuler("Erreur lors de la récupération de la meilleure résolution: " + err , "red"));
     })
   })
   .catch(function(err){
     //JSON n'est pas télécheargeable
-    console.error(kuler("Impossible de récuperer les infos , erreur : " + err , "red"));
+    console.error(kuler("Impossible de récupérer les infos , erreur : " + err , "red"));
   })
 
 }; 
