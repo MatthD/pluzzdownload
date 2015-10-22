@@ -20,6 +20,7 @@
     "extract-dates": "^1.0.3",
     "fluent-ffmpeg": "^2.0.1",
     "kuler": "0.0.0",
+    "mkdirp": "^0.5.1",
     "nunjucks": "^2.1.0",
     "request": "^2.65.0",
     "request-promise": "^1.0.1",
