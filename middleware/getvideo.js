@@ -5,24 +5,35 @@
 var avconv = require("avconv"),
     kuler  = require("kuler"),
     mkdirp = require('mkdirp'),
+    fs = require('fs'),
     obj = {},
+    extension,
+    vcodec,
     proxy;
 
 
 
 
-obj.get = function(info,res,io,callback){
+obj.get = function(info,format,res,io,callback){
   //Paramètres avconv Video/Audio , process.env.HOME correspond à /home/user/
+  if(process.env.HTTP_PROXY){
+    proxy = process.env.HTTP_PROXY;
+    info.m3uHD = info.m3uHD + " socks=" +proxy ;
+  }
 
-    if(process.env.HTTP_PROXY){
-      proxy = process.env.HTTP_PROXY;
-      info.m3uHD = info.m3uHD + " socks=" +proxy ;
-    }
-    console.log("m3u " , info.m3uHD);
+  extension = (format === "mp4") ? "mp4" : format;
+  vcodec = (format === "mp4") ? "h264" : null;
 
   var avconv_params = [
-   "-y" , "-i"  , info.m3uHD ,"-strict" , "experimental"  , '-f' , 'matroska' , info.destination + info.filename_emission + ".mkv"
+   "-y" , "-i"  , info.m3uHD ,"-strict" , "experimental"  , '-f' , format  ,info.destination + info.filename_emission + "." + extension
   ];
+
+  if(vcodec){
+    avconv_params.splice(7,0 ,"-vcodec");
+    avconv_params.splice(8,0 ,vcodec);
+  }
+
+  console.log("Lien m3u8 " , info.m3uHD , " avconv_params : " , avconv_params);
 
   // Creation du repertoire info.destination s'il il n'existe pas
   mkdirp(info.destination, function (err) {
@@ -44,28 +55,15 @@ obj.get = function(info,res,io,callback){
 
   stream.once('exit', function(exitCode, signal, metadata) {
     io.sockets.emit('update', { toast: "Vidéo Récupérée & Convertie" });
+    io.sockets.emit('update', { progress: "100%" });
     //conversion en fonction du format de sortie choisi dans index.html
-    switch(caconv_param){
-      case "#formatMKV":
-        res.download(info.destination + info.filename_emission + ".mkv", function(){
-        fs.unlink(info.destination + info.filename_emission + ".mkv");
-        });
-        break;
-      case "#formatMP5":
-        res.download(info.destination + info.filename_emission + ".mp5", function(){
-        fs.unlink(info.destination + info.filename_emission + ".mp5");
-        });
-        break;
-      default "#formatMKV":
-        res.download(info.destination + info.filename_emission + ".mp4", function(){
-        fs.unlink(info.destination + info.filename_emission + ".mp4");
-      });
-    
-    //res.download(info.destination + info.filename_emission + ".mp4", function(){
-    //  fs.unlink(info.destination + info.filename_emission + ".mp4");
-    }; // name of archive
-    process.stdout.write('\r');
-    console.log("Vidéo Téléchargée avec succès");
+    res.download(info.destination + info.filename_emission + "." + extension, function(){
+      fs.unlink(info.destination + info.filename_emission + "." + extension);
+      
+      process.stdout.write('\r');
+      console.log("Vidéo Téléchargée avec succès");
+    });
+
   });
 
 };

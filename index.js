@@ -16,6 +16,8 @@ var express = require('express'), // Surveille les connexion a l'appli
     obj = {},
     io = require('socket.io')(server),
     message ,
+    format,
+    dlink,
     temp_folder = process.env.HOME + "/tmp/"; // repertoire temporaire
 
 
@@ -51,26 +53,29 @@ app.get('/', function (req, res) {
 app.post('/', function (req, res) {
 
   // Si le lien PLUZZ n'est pas envoyé OU s'il n'a pas le bon format
-  if(!(req.body.lienPluzz && req.body.lienPluzz.indexOf("http://pluzz.francetv.fr/videos/") > -1)){
+  if(!(req.body.dlink && req.body.dlink.indexOf("http://pluzz.francetv.fr/videos/") > -1)){
     obj.error = "Ceci n'est pas une URL valide , elle doit etre du type 'http://pluzz.francetv.fr ' "
     console.error(kuler("Une mauvaise url à été transmise" , "red"));
     res.render("index.html" , obj);
     return;
   }
+  dlink = req.body.dlink;
+  format = req.body.format;
+  format = (format && (format === "mp4" ||  format === "avi" || format === "mp3")) ? format : "mp4";
+  
   // Si tout es bon on lance les fonctions getID,getInfo,getVideo
-  lauchTraitement(req.body.lienPluzz, res , io);
+  lauchTraitement(dlink, format, res, io);
 });
 
 io.on('connection', function (socket) {
   console.log("une connexion");
-  socket.emit("update" , "test");
-  socket.emit("update" , "test2");
+  socket.emit("update" , "Vous êtes connecté par socket.io");
 });
 
 
-var lauchTraitement = function(url,res,io){
+var lauchTraitement = function(url,format,res,io){
 
-  // Force url à être String
+  // Force url à String
   url = url.toString();
 
 
@@ -86,7 +91,7 @@ var lauchTraitement = function(url,res,io){
       console.log("Informations vidéo : " , kuler(info , "cyan"));
 
       // Téléchargement de la video
-      getVideo.get(info , res, io , function(){
+      getVideo.get(info , format, res, io , function(){
         console.log(kuler("Video téléchargée avec succés ! " , "green"));
       });
 
