@@ -22,7 +22,7 @@
   </div>
 
   <div class="row">
-    <img src="/" alt="/" class="hide picture">
+    <img src="/" alt="/" class="hide picture center" width="250">
   </div>
 
   <div class="row">
@@ -74,13 +74,19 @@
   var socket = io.connect('http://localhost:3000'),
       progression = $(".progression"),
       picture = $(".picture");
+
   socket.on('update', function (data) {
     console.log("Vous avez un message" , data);
+    if(data.info){
+      if($(".picture").hasClass("hide")){
+        $(".picture").removeClass("hide");
+      }
+      $(".picture").attr("src" , data.info.image);
+      $(".message").text(data.info.message);
+      Materialize.toast(data.info.toast, 4500, 'rounded');
+    }
     if(data.toast){
         Materialize.toast(data.toast, 4500, 'rounded');
-    }
-    if(data.message){
-      $(".message").text(data.message);
     }
     if (data.progress){
       if(progression.hasClass("hide")){
@@ -88,12 +94,6 @@
       }
       $(".determinate").css("width" , data.progress);
       $(".progressText").text(data.progress);
-    }
-    if(data.image){
-      if(picture.hasClass("hide")){
-        picture.removeClass("hide");
-      }
-      picture.attr("src" , data.picture);
     }
   });
 </script>
