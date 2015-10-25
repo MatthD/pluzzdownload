@@ -23,8 +23,8 @@ var express = require('express'), // Surveille les connexion a l'appli
 
 // Ecoute sur le port 3000
 server.listen(3000 , function(){
-    console.log(kuler('L\'application ecoute le port 3000 ' , "green"));
-});
+    console.log(kuler('L\'application écoute le port 3000 ' , "green"));
+})
 
 
 // L'app doit utiliser Le moteur de template Nunjucks
@@ -54,8 +54,8 @@ app.post('/', function (req, res) {
 
   // Si le lien PLUZZ n'est pas envoyé OU s'il n'a pas le bon format
   if(!(req.body.dlink && req.body.dlink.indexOf("http://pluzz.francetv.fr/videos/") > -1)){
-    obj.error = "Ceci n'est pas une URL valide , elle doit etre du type 'http://pluzz.francetv.fr ' "
-    console.error(kuler("Une mauvaise url à été transmise" , "red"));
+    obj.error = "Ceci n'est pas une URL valide , elle doit être du type 'http://pluzz.francetv.fr ' "
+    console.error(kuler("Une mauvaise url a été transmise" , "red"));
     res.render("index.html" , obj);
     return;
   }
@@ -92,8 +92,8 @@ var lauchTraitement = function(url,format,res,io){
 
       // Téléchargement de la video
       getVideo.get(info , format, res, io , function(){
-        console.log(kuler("Video téléchargée avec succés ! " , "green"));
-      });
+        console.log(kuler("Vidéo téléchargée avec succès ! " , "green"));
+      }
 
     });
 
