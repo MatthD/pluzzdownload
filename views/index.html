@@ -17,51 +17,54 @@
   <div class="row">
     <h1 class="col s6 offset-s3">Télécharger une video Pluzz</h1>
   </div>
+  <!-- card begin-->
   <div class="row">
-    <div class="card-panel red darken-2 col s6 offset-s3 white-text">{{ error }}</div>
-  </div>
-
-  <div class="row">
-    <img src="/" alt="/" class="hide picture center" width="250">
-  </div>
-
-  <div class="row">
-    <div class="card-panel green col s6 offset-s3 white-text message"></div>
-  </div>
-
-  <div class="row progression hide">
-      <div class="progressText col s6 offset-s3 center"></div>
-      <div class="progress col s6 offset-s3">
-        <div class="determinate"></div>
+    <div class="col s12 m12" id="downloadArea">
+      <div class="card-panel red darken-2 col s6 offset-s3 white-text">{{ error }}</div>
+      <div class="card-image">
+        <img src="/" alt="/" class="hide picture center" width="250">
       </div>
-  </div>
 
-  <div class="row">
-    <form  class="col s6 offset-s3" action="/" method="POST">
-      <div class="row">
-        <div class="input-field">
-          <i class="material-icons prefix">input</i>
-          <input id="dlink" type="url" name="dlink" class="validate" required>
-          <label for="dlink">Lien Pluzz</label>
+      
+        <div class="card-panel green col s6 offset-s3 white-text message"></div>
+      
+
+        <div class="row progression hide">
+          <div class="progressText col s6 offset-s3 center"></div>
+          <div id="progressBar"class="progress col s6 offset-s3">
+            <div class="determinate"></div>
+          </div>
         </div>
-         <!-- options formats de conversion -->
-        <div class="switch">
-          <label>Veuillez choisir le format de sortie souhaitée :</label><br>
-          <input class="with-gap" name="format" value="mp4" type="radio" id="formatMP4" checked="checked"/>
-          <label for="formatMP4">.mp4</label>
-          <input class="with-gap" name="format" value="avi" type="radio" id="formatAVI"/>
-          <label for="formatAVI">.avi</label>
-          <input class="with-gap" name="format" value="mp3" type="radio" id="formatMP3"/>
-          <label for="formatMP3">.mp3</label>
-        </div>
+
+      
+          <form id="form" class="col s6 offset-s3" action="/" method="POST">
+            <div class="row">
+              <div class="input-field">
+                <i class="material-icons prefix">input</i>
+                <input id="dlink" type="url" name="dlink" class="validate" required>
+                <label for="dlink">Lien Pluzz</label>
+              </div>
+               <!-- options formats de conversion -->
+              <div class="switch">
+                <label>Veuillez choisir le format de sortie souhaité :</label><br>
+                <input class="with-gap" name="format" value="mp4" type="radio" id="formatMP4" checked="checked"/>
+                <label for="formatMP4">.mp4</label>
+                <input class="with-gap" name="format" value="avi" type="radio" id="formatAVI"/>
+                <label for="formatAVI">.avi</label>
+                <input class="with-gap" name="format" value="mp3" type="radio" id="formatMP3"/>
+                <label for="formatMP3">.mp3</label>
+              </div>
+            </div>
+            <div class="row bouttonTelechargement">
+                <button class="btn waves-effect waves-light" type="submit" name="action">Télécharger
+                  <i class="material-icons right">send</i>
+                </button>
+              </div>
+          </form>
       </div>
-      <div class="row bouttonTelechargement">
-          <button class="btn waves-effect waves-light" type="submit" name="action">Télécharger
-            <i class="material-icons right">send</i>
-          </button>
-        </div>
-    </form>
-  </div>
+    </div>
+  
+  <!-- card end-->
   
 </body>
 

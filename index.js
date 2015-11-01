@@ -93,7 +93,7 @@ var lauchTraitement = function(url,format,res,io){
       // Téléchargement de la video
       getVideo.get(info , format, res, io , function(){
         console.log(kuler("Vidéo téléchargée avec succès ! " , "green"));
-      }
+      });
 
     });
 

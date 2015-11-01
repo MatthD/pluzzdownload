@@ -19,3 +19,18 @@ h1{
   background: #60BECA;
   border-radius: 30px;
 }
+
+#downloadArea {
+	border: 1px solid #ccc; 
+	margin-left: 23em;
+
+}
+
+#form {
+	margin-left: 1em;
+	width: 100%;
+}
+
+#progressBar {
+	margin-left: 1em;
+}
