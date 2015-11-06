@@ -21,9 +21,11 @@ h1{
 }
 
 #downloadArea {
-	border: 1px solid #ccc; 
+	border: 2px solid #ccc;
+  border-radius: 5px; 
 	margin-left: 23em;
   width: 50%;
+  box-shadow: 3px 1px 15px rgb(128, 128, 128);
 
 }
 
