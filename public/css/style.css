@@ -35,3 +35,8 @@ h1{
 #progressBar {
 	margin-left: 1em;
 }
+
+.switch label {
+  color: #000000;
+  font-size: 1.1em;
+}
