@@ -55,8 +55,9 @@ h1{
 
 .page-footer {
   background-color: #424242 !important;
+  padding-bottom: 0px;
 }
 
 .footer-copyright {
-  background-color: #212121;
+  background-color: #212121 !important;
 }
