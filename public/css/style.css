@@ -54,7 +54,7 @@ h1{
 }
 
 .page-footer {
-  background-color: #424242;
+  background-color: #424242 !important;
 }
 
 .footer-copyright {
