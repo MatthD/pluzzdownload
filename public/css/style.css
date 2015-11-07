@@ -42,3 +42,15 @@ h1{
   color: #000000;
   font-size: 1.1em;
 }
+
+
+#row1Footer {
+  margin-top: -20px;
+}
+#about {
+  width: 30%;
+
+}
+#contact{
+  margin-left: 0%;
+}
