@@ -47,11 +47,16 @@ h1{
 /*Footer */
 #about {
   width: 30%;
-
+  margin-top: -20px;
+}
+#follow {
+  margin-top: -20px;
 }
 #contact{
   margin-left: 0%;
+  margin-top: -20px;
 }
+
 
 .page-footer {
   background-color: #424242 !important;
