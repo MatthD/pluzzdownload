@@ -60,7 +60,7 @@ h1{
 
 .page-footer {
   background-color: #424242 !important;
-  padding-top: 50px;
+  padding-top: 50px !important;
 }
 
 .footer-copyright {
