@@ -2,6 +2,7 @@
 * Style CSS de PLUZZDownloader
 */
 
+
 h1{
   text-align: center;
   color: #EE6E73;
@@ -21,11 +22,12 @@ h1{
 }
 
 #downloadArea {
+  margin-bottom : 140px;
 	border: 2px solid #ccc;
   border-radius: 5px; 
 	/*margin: 0px auto;
   float: none;*/
-  margin-left: 15em;
+  margin-left: 20%;
   width: 60%;
   box-shadow: 3px 1px 15px rgb(128, 128, 128);
 
@@ -34,10 +36,6 @@ h1{
 #form {
 	margin-left: 1em;
 	width: 100%;
-}
-
-#progressBar {
-	margin-left: 1em;
 }
 
 .switch label {

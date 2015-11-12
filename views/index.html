@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <title>Téléchargement de video Pluzz.fr  - Accueil</title>
 
-  <!--Import Google Icon Font-->
-  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <!-- Compiled and minified CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css">
+  <link rel="stylesheet" href="public/css/materialize.min.css">
 
   <link rel="stylesheet" href="public/css/style.css">
 
@@ -18,11 +16,13 @@
     <h1 class="col s6 offset-s3">Télécharger une video Pluzz</h1>
   </div>
   <!-- card begin-->
-  <div class="row">
+
+  <div class="container">
+    <div class="row">
     <div class="col s12 m12" id="downloadArea">
       <div class="card-panel red darken-2 col s6 offset-s3 white-text">{{ error }}</div>
-      <div class="card-image">
-        <img src="/" alt="/" class="hide picture center" width="250">
+      <div class="card-image center">
+        <img src="/" alt="/" class="hide picture" width="250">
       </div>
 
       
@@ -31,7 +31,7 @@
 
         <div class="row progression hide">
           <div class="progressText col s6 offset-s3 center"></div>
-          <div id="progressBar"class="progress col s6 offset-s3">
+          <div id="progressBar"class="progress col s6 offset-s3 center">
             <div class="determinate"></div>
           </div>
         </div>
@@ -62,7 +62,9 @@
               </div>
           </form>
       </div>
-    </div>
+  </div>
+  </div>
+  
   
   <!-- card end-->
   <!-- footer begin-->
@@ -97,9 +99,9 @@
 </body>
 
 <!-- Jquery & Materialize framework -->
-<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/js/materialize.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+<script src="public/js/jquery-2.js"></script>
+<script src="public/js/materialize.min.js"></script>
+<script src="public/js/socket-io.js"></script>
 <!-- Socketio pour mettre à jour le site sans rechargement -->
 <script>
   var socket = io.connect('http://localhost:3000'),

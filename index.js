@@ -45,7 +45,9 @@ app.use("/public", express.static(__dirname + '/public'));
 
 // Ecoute si quelqu'un arrive sur la page d'accueil en mode GET (normal)
 app.get('/', function (req, res) {
-  res.render("index.html");
+  res.render("index.html" , function(){
+    io.sockets.emit('update', { toast : "Traitement en cours ... " });
+  });
 });
 
 
@@ -59,6 +61,7 @@ app.post('/', function (req, res) {
     res.render("index.html" , obj);
     return;
   }
+  res.render("index.html");
   dlink = req.body.dlink;
   format = req.body.format;
   format = (format && (format === "mp4" ||  format === "avi" || format === "mp3")) ? format : "mp4";
@@ -82,7 +85,6 @@ var lauchTraitement = function(url,format,res,io){
   // Recupération de l'ID
   getId.get(url , res , io, function(id){
 
-    io.sockets.emit('update', { toast : "Identifiant de vidéo récupéré ... " });
     console.log("ID vidéo : " , kuler(id , "orange"));
 
     // Recupération de des Infos (titre , date , url m3U8 ...)
