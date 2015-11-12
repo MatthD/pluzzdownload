@@ -45,9 +45,7 @@ app.use("/public", express.static(__dirname + '/public'));
 
 // Ecoute si quelqu'un arrive sur la page d'accueil en mode GET (normal)
 app.get('/', function (req, res) {
-  res.render("index.html" , function(){
-    io.sockets.emit('update', { toast : "Traitement en cours ... " });
-  });
+  res.render("index.html");
 });
 
 
@@ -61,7 +59,10 @@ app.post('/', function (req, res) {
     res.render("index.html" , obj);
     return;
   }
-  res.render("index.html");
+  res.render("index.html" , function(){
+    console.log("on peut envoyer le socket là? : " , io.sockets);
+    io.sockets.emit('update', { progress: "start" });
+  });
   dlink = req.body.dlink;
   format = req.body.format;
   format = (format && (format === "mp4" ||  format === "avi" || format === "mp3")) ? format : "mp4";

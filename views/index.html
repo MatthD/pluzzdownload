@@ -32,7 +32,7 @@
         <div class="row progression hide">
           <div class="progressText col s6 offset-s3 center"></div>
           <div id="progressBar"class="progress col s6 offset-s3 center">
-            <div class="determinate"></div>
+            <div class="progressElement"></div>
           </div>
         </div>
 
@@ -125,8 +125,15 @@
       if(progression.hasClass("hide")){
         progression.removeClass("hide");
       }
-      $(".determinate").css("width" , data.progress);
-      $(".progressText").text(data.progress);
+      if(data.progress === "start"){
+        $(".progressElement").addClass("indeterminate");
+      }
+      else{
+        $(".progressElement").addClass("determinate")
+        $(".progressElement").css("width" , data.progress);
+        $(".progressText").text(data.progress);
+      }
+
     }
   });
 </script>
