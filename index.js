@@ -65,7 +65,7 @@ app.post('/', function (req, res) {
   });
   dlink = req.body.dlink;
   format = req.body.format;
-  format = (format && (format === "mp4" ||  format === "avi" || format === "mp3")) ? format : "mp4";
+  format = (format && (format === "mp4" ||  format === "avi")) ? format : "mp4";
   
   // Si tout es bon on lance les fonctions getID,getInfo,getVideo
   lauchTraitement(dlink, format, res, io);
