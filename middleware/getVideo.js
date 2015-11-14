@@ -46,9 +46,11 @@ obj.get = function(info,format,res,io,callback){
   /*    FFMPEG    */
   /*--------------*/
 
-  var command = ffmpeg(info.info.m3uHD);
-  console.log(command);
-
+  var command = ffmpeg(fs.createReadStream(info.m3uHD));
+  command
+  .format('mp4')
+  .videoCodec('mpeg4')
+  .output("test.mp4");
 };
 
 module.exports = obj;
