@@ -2,16 +2,17 @@
 * Télécharge les videos de PLUZZ
 */
 
-var ffmpeg = require("easy-ffmpeg"),
+var ffmpeg = require("fluent-ffmpeg"),
     kuler  = require("kuler"),
     mkdirp = require('mkdirp'),
+    path = require('path'),
     fs = require('fs'),
+    executable  = (process.platform === "win32") ? "ffmpeg.exe" : "ffmpeg",
+    ffmpegpath = path.join(path.dirname(process.mainModule.filename), 'ffmpeg', process.platform, process.arch , executable),
     obj = {},
     extension,
     vcodec,
     proxy;
-
-
 
 
 obj.get = function(info,format,res,io,callback){
@@ -23,15 +24,6 @@ obj.get = function(info,format,res,io,callback){
 
   extension = (format === "mp4") ? "mp4" : format;
   vcodec = (format === "mp4") ? "h264" : null;
-
-  var avconv_params = [
-   "-y" , "-i"  , info.m3uHD ,"-strict" , "experimental"  , '-f' , format  ,info.destination + info.filename_emission + "." + extension
-  ];
-
-  if(vcodec){
-    avconv_params.splice(7,0 ,"-vcodec");
-    avconv_params.splice(8,0 ,vcodec);
-  }
 
   console.log("Lien m3u8 " , info.m3uHD , " avconv_params : " , avconv_params);
 
@@ -46,12 +38,28 @@ obj.get = function(info,format,res,io,callback){
   /*    FFMPEG    */
   /*--------------*/
 
-  var command = ffmpeg(fs.createReadStream(info.m3uHD));
-  command
-  .format('mp4')
-  .videoCodec('mpeg4')
-  .output("test.mp4");
+  console.log("ffmpegpath : " , ffmpegpath);
+
+
+  // create new ffmpeg processor instance using input stream
+  // instead of file path (can be any ReadableStream)
+  var proc = ffmpeg(info.m3uHD)
+    // setup event handlers
+    .on('end', function() {
+      console.log('done processing input stream');
+    })
+    .on('progress' , function(){
+
+    })
+    .on('error', function(err) {
+      console.log('an error happened: ' + err.message);
+    })
+    // save to file
+    .save('tests.mp4');
+
+
+
+
 };
 
 module.exports = obj;
-
