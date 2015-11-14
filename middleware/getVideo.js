@@ -2,7 +2,7 @@
 * Télécharge les videos de PLUZZ
 */
 
-var avconv = require("avconv"),
+var ffmpeg = require("easy-ffmpeg"),
     kuler  = require("kuler"),
     mkdirp = require('mkdirp'),
     fs = require('fs'),
@@ -42,29 +42,12 @@ obj.get = function(info,format,res,io,callback){
     }
   });
 
-  //Création de la video dans info.destination
-  var stream = avconv(avconv_params);
+  /*--------------*/
+  /*    FFMPEG    */
+  /*--------------*/
 
-  stream.on('progress', function(progress) {
-    // Affiche le téléchargement en cours en % à 2 chiffres près après la virgule
-    process.stdout.write(kuler(" ... Téléchargement " + (progress*100).toFixed(2) + "% \r" , "orange"));
-    //Envoi le % de progression à la page html
-    progress = (progress*100).toFixed(2) + "%";
-    io.sockets.emit('update', { progress: progress });
-  });
-
-  stream.once('exit', function(exitCode, signal, metadata) {
-    io.sockets.emit('update', { toast: "Vidéo Récupérée & Convertie" });
-    io.sockets.emit('update', { progress: "100%" });
-    //conversion en fonction du format de sortie choisi dans index.html
-    res.download(info.destination + info.filename_emission + "." + extension, function(){
-      fs.unlink(info.destination + info.filename_emission + "." + extension);
-      
-      process.stdout.write('\r');
-      console.log("Vidéo Téléchargée avec succès");
-    });
-
-  });
+  var command = ffmpeg(info.info.m3uHD);
+  console.log(command);
 
 };
 
