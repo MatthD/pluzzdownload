@@ -60,7 +60,6 @@ app.post('/', function (req, res) {
     return;
   }
   res.render("index.html" , function(){
-    console.log("on peut envoyer le socket là? : " , io.sockets);
     io.sockets.emit('update', { progress: "start" });
   });
   dlink = req.body.dlink;
