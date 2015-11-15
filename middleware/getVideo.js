@@ -11,6 +11,7 @@ var ffmpeg = require("fluent-ffmpeg"),
     ffmpegpath = path.join(path.dirname(process.mainModule.filename), 'ffmpeg', process.platform, process.arch , ffmpegExe),
     ffprobExe  = (process.platform === "win32") ? "ffprobe.exe" : "ffprobe",
     ffprobPath = path.join(path.dirname(process.mainModule.filename), 'ffmpeg', process.platform, process.arch , ffprobExe),
+    presets = path.join(path.dirname(process.mainModule.filename), 'ffmpeg', 'presets'),
     obj = {},
     extension,
     vcodec,
@@ -22,8 +23,7 @@ ffmpeg.setFfprobePath(ffprobPath);
 
 obj.get = function(info,format,res,io,callback){
 
-  extension = (format === "avi") ? "avi" : format;
-  format = (format === "avi") ? "divx" : format;
+  extension = format;
 
   console.log("Lien m3u8 " , info.m3uHD);
 
@@ -46,7 +46,7 @@ obj.get = function(info,format,res,io,callback){
   });
 
   var proc = function(){
-    ffmpeg(info.m3uHD)
+    ffmpeg(info.m3uHD , { presets: presets })
     .on('end', function() {
       io.sockets.emit('update', { toast: "Vidéo Récupérée & Convertie" });
       io.sockets.emit('update', { progress: "100%" });
