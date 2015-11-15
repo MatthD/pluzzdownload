@@ -22,7 +22,8 @@ ffmpeg.setFfprobePath(ffprobPath);
 
 obj.get = function(info,format,res,io,callback){
 
-  extension = (format === "matroska") ? "mkv" : format;
+  extension = (format === "avi") ? "avi" : format;
+  format = (format === "avi") ? "divx" : format;
 
   console.log("Lien m3u8 " , info.m3uHD);
 
@@ -47,21 +48,18 @@ obj.get = function(info,format,res,io,callback){
   var proc = function(){
     ffmpeg(info.m3uHD)
     .on('end', function() {
-      console.log('done processing input stream');
+      io.sockets.emit('update', { toast: "Vidéo Récupérée & Convertie" });
+      io.sockets.emit('update', { progress: "100%" });
     })
     .on('progress' , function(progress){
       process.stdout.write(kuler(" ... Téléchargement " + progress.percent + "% \r" , "orange"));
+      progress = (progress.percent).toFixed(2) + "%";
+      io.sockets.emit('update', { progress: progress });
     })
     .on('error', function(err) {
       console.log('an error happened: ' + err);
     })
-    .format('matroska')
-    .videoBitrate('2048k')
-    .videoCodec('libx264')
-    .size('720x?')
-    .audioBitrate('128k')
-    .audioChannels(2)
-    .audioCodec('libmp3lame')
+    .preset(format)
     .pipe(res);
     };
   }

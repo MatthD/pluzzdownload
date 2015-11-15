@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Téléchargement de video Pluzz.fr  - Accueil</title>
 
+  <!--Import Google Icon Font-->
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
   <!-- Compiled and minified CSS -->
   <link rel="stylesheet" href="public/css/materialize.min.css">
@@ -13,7 +15,7 @@
 </head>
 <body background="#EE6E73">
   <div class="row">
-    <h1 class="col s6 offset-s3">Télécharger une video Pluzz</h1>
+    <h1 class="col s6 offset-s3">Pluzz & Canal+ Download</h1>
   </div>
   <!-- card begin-->
 
@@ -42,15 +44,15 @@
               <div class="input-field">
                 <i class="material-icons prefix">input</i>
                 <input id="dlink" type="url" name="dlink" class="validate" required>
-                <label for="dlink">Lien Pluzz</label>
+                <label for="dlink">Lien vidéo</label>
               </div>
                <!-- options formats de conversion -->
               <div class="switch">
                 <label>Veuillez choisir le format de sortie souhaité :</label><br>
-                <input class="with-gap" name="format" value="mp4" type="radio" id="formatMP4" checked="checked"/>
-                <label for="formatMP4">.mp4</label>
-                <input class="with-gap" name="format" value="avi" type="radio" id="formatAVI"/>
-                <label for="formatAVI">.avi</label>
+                <input class="with-gap" name="format" value="avi" type="radio" id="formatAVI" checked="checked"/>
+                <label for="formatMP3">.avi</label>
+                <input class="with-gap" name="format" value="mp3" type="radio" id="formatAVI"/>
+                <label for="formatMP3">.mp3</label>
               </div>
             </div>
             <div class="row bouttonTelechargement">
