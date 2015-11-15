@@ -109,7 +109,7 @@
       picture = $(".picture");
 
   socket.on('update', function (data) {
-    console.log("Vous avez un message" , data);
+    console.log("Message : " , data);
     if(data.info){
       if($(".picture").hasClass("hide")){
         $(".picture").removeClass("hide");

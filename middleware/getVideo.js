@@ -21,7 +21,7 @@ var ffmpeg = require("fluent-ffmpeg"),
 ffmpeg.setFfmpegPath(ffmpegpath);
 ffmpeg.setFfprobePath(ffprobPath);
 
-obj.get = function(info,format,res,io,callback){
+obj.get = function(info,format,res,io,clients,callback){
 
   extension = format;
 

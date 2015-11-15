@@ -11,15 +11,21 @@ var express = require('express'), // Surveille les connexion a l'appli
     nunjucks = require("nunjucks"),
     kuler    = require("kuler"),
     bodyParser = require('body-parser'),
+    session = require("express-session")({
+      secret: "my-secret",
+      resave: true,
+      saveUninitialized: true
+    }),
+    sharedsession = require("express-socket.io-session"),
     app = express(),
     server = require('http').Server(app),
     obj = {},
     io = require('socket.io')(server),
+    clients = {},
     message ,
     format,
     dlink,
     temp_folder = process.env.HOME + "/tmp/"; // repertoire temporaire
-
 
 // Ecoute sur le port 3000
 server.listen(3000 , function(){
@@ -38,10 +44,22 @@ app.use( bodyParser.json() );
 app.use(bodyParser.urlencoded({
   extended: true
 })); 
+app.use(session);
 
 // Indique que le dossier public est accessible
 app.use("/public", express.static(__dirname + '/public'));
 
+
+io.use(sharedsession(session));
+
+// On save les clients
+io.on('connection', function (socket) {
+  clients[socket.handshake.sessionID] = socket;
+  socket.emit("update" , "Vous êtes connecté par socket.io");
+  socket.on('disconnect', function() {
+    delete clients[socket.handshake.sessionID];
+  });
+});
 
 // Ecoute si quelqu'un arrive sur la page d'accueil en mode GET (normal)
 app.get('/', function (req, res) {
@@ -70,17 +88,10 @@ app.post('/', function (req, res) {
   lauchTraitement(dlink, format, res, io);
 });
 
-io.on('connection', function (socket) {
-  console.log("une connexion");
-  socket.emit("update" , "Vous êtes connecté par socket.io");
-});
-
-
 var lauchTraitement = function(url,format,res,io){
 
   // Force url à String
   url = url.toString();
-
 
   // Recupération de l'ID
   getId.get(url , res , io, function(id){
