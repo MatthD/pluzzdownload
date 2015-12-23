@@ -49,6 +49,9 @@ h1{
   width: 30%;
   margin-top: -25px;
 }
+#ftv_logos{
+    display: flex;
+}
 #follow {
   margin-top: -25px;
 }
