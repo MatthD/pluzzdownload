@@ -51,8 +51,14 @@ h1{
 }
 #ftv_logos{
     display: flex;
-    padding: 17px 1px 0px 10px;
-    height: 30px;
+    
+    
+}
+#ftv_logos li{
+  padding: 17px 1px 0px 10px;
+}
+#ftv_logos li a img{
+  height: 30px;
 }
 #follow {
   margin-top: -25px;
