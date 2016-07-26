@@ -29,7 +29,7 @@ var express = require('express'), // Surveille les connexion a l'appli
     port = process.env.PORT || 3000;
 
 // Ecoute sur le port 3000
-server.listen(3000 , function(){
+server.listen(port , function(){
     console.log(kuler('L\'application écoute le port 3000 ' , "green"));
 })
 
