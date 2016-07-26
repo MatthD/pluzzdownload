@@ -25,7 +25,8 @@ var express = require('express'), // Surveille les connexion a l'appli
     message ,
     format,
     dlink,
-    temp_folder = process.env.HOME + "/tmp/"; // repertoire temporaire
+    temp_folder = process.env.HOME + "/tmp/", // repertoire temporaire
+    port = process.env.PORT || 3000;
 
 // Ecoute sur le port 3000
 server.listen(3000 , function(){
