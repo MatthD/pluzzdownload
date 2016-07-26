@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://matthias_dieudonne@bitbucket.org/matthias_dieudonne/pluzzdownloader.git"
   },
-  "author": "Matthias Dieudonne",
+  "author": "Matthias Dieudonne & Nourdine Combo",
   "license": "ISC",
   "dependencies": {
     "JSONSelect": "^0.4.0",
