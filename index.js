@@ -102,7 +102,7 @@ var lauchTraitement = function(url,format,res,io){
     // Recupération de des Infos (titre , date , url m3U8 ...)
     getInfo.get(id, res, io, function(info){
       info.destination = temp_folder;
-      console.log("Informations vidéo : " , kuler(info , "cyan"));
+      //console.log("Informations vidéo : " , kuler(info , "cyan"));
 
       // Téléchargement de la video
       getVideo.get(info , format, res, io , function(){

@@ -40,7 +40,7 @@ obj.get = function(url,res,io,callback) {
       return;
     }
     message = "Identifiant de vidéo récupéré ... ";
-    console.log("message" , message);
+    //console.log("message" , message);
     io.sockets.emit('update', { toast : message });
     callback(id);
   });

@@ -4,7 +4,6 @@
 exports.load = function(ffmpeg) {
   ffmpeg
     .format('avi')
-    .videoBitrate('1024k')
     .videoCodec('mpeg4')
     .size('720x?')
     .audioBitrate('128k')

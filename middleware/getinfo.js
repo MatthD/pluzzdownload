@@ -32,6 +32,8 @@ obj.get = function(id,res,io,callback) {
     // Definit les infos depuis JSON :
     json_emission = JSON.parse(matches);
 
+    console.log("info : ", json_emission);
+
     //Si le json est video
     if(!(json_emission ||  json_emission["code_programme"] ||
       json_emission["sous_titre"] || json_emission["diffusion"]["date_debut"])){
@@ -41,6 +43,7 @@ obj.get = function(id,res,io,callback) {
       res.render("index.html" , obj);
       return;
     }
+
     json_info.image = "http://webservices.francetelevisions.fr" + json_emission["image"];
     json_info.titre_complet = json_emission["titre"];
     json_info.sous_titre_complet = json_emission["sous_titre"];

@@ -13,6 +13,8 @@ var ffmpeg = require("fluent-ffmpeg"),
     ffprobPath = path.join(path.dirname(process.mainModule.filename), 'ffmpeg', process.platform, process.arch , ffprobExe),
     presets = path.join(path.dirname(process.mainModule.filename), 'ffmpeg', 'presets'),
     obj = {},
+    time = 1, // set it to 1 to not devided by 0
+    timeDone = 0,
     extension,
     vcodec,
     proxy;
@@ -25,7 +27,7 @@ obj.get = function(info,format,res,io,clients,callback){
 
   extension = format;
 
-  console.log("Lien m3u8 " , info.m3uHD);
+  //console.log("Lien m3u8 " , info.m3uHD);
 
   // Creation du repertoire info.destination s'il il n'existe pas
   mkdirp(info.destination, function (err) {
@@ -39,7 +41,7 @@ obj.get = function(info,format,res,io,clients,callback){
   /*--------------*/
 
   ffmpeg.ffprobe(info.m3uHD, function(err, metadata) {
-    console.log(metadata.format.size);
+    time = metadata.format.duration;
     // Envoi du fichier
     res.attachment(info.filename_emission + "." + extension);
     proc();
@@ -47,17 +49,21 @@ obj.get = function(info,format,res,io,clients,callback){
 
   var proc = function(){
     ffmpeg(info.m3uHD , { presets: presets })
+    .on('progress' , function(progress){
+      var t = progress.timemark.split(':');
+      timeDone = (+t[0]) * 60 * 60 + (+t[1]) * 60 + (+t[2]);
+      //process.stdout.write(kuler(" ... Téléchargement " + progress.percent + "% \r" , "orange"));
+      progress = progress.percent ? (progress.percent).toFixed(2) + "%" : ((timeDone/time)*100).toFixed(2) + "%";
+      io.sockets.emit('update', { progress: progress });
+    })
     .on('end', function() {
       io.sockets.emit('update', { toast: "Vidéo Récupérée & Convertie" });
       io.sockets.emit('update', { progress: "100%" });
     })
-    .on('progress' , function(progress){
-      process.stdout.write(kuler(" ... Téléchargement " + progress.percent + "% \r" , "orange"));
-      progress = (progress.percent).toFixed(2) + "%";
-      io.sockets.emit('update', { progress: progress });
-    })
     .on('error', function(err) {
-      console.log('an error happened: ' + err);
+      obj.error = 'an error happened: ' + err;
+      console.error(obj.error);
+      res.render("index.html" , obj.error);
     })
     .preset(format)
     .pipe(res);
