@@ -22,23 +22,17 @@
   <div class="container">
     <div class="row">
     <div class="col s12 m12" id="downloadArea">
-      <div class="card-panel red darken-2 col s6 offset-s3 white-text">{{ error }}</div>
+      <div class="card-panel red darken-2 col s6 offset-s3 white-text" id="errorWindow">{{ error }}</div>
       <div class="card-image center">
         <img src="/" alt="/" class="hide picture" width="250">
       </div>
-
-      
         <div class="card-panel green col s6 offset-s3 white-text message"></div>
-      
-
         <div class="row progression hide">
           <div class="progressText col s6 offset-s3 center"></div>
           <div id="progressBar"class="progress col s6 offset-s3 center">
             <div class="progressElement"></div>
           </div>
         </div>
-
-      
           <form id="form" class="col s6 offset-s3" action="/">
             <div class="row">
               <div class="input-field">
@@ -125,44 +119,51 @@
 <script src="public/js/socket-io.js"></script>
 <!-- Socketio pour mettre à jour le site sans rechargement -->
 <script>
-  var socket = io(),
-      progression = $(".progression"),
-      picture = $(".picture");
 
-  $("#sendUrl").on("click", function(event){
-    // Block form & stop event propagation to children
-    event.preventDefault();
-    event.stopPropagation();
-    socket.emit("url", { link : $("#dlink").val(), format : $("input[name='format']:checked").val()})
-  })
+  $(document).on("ready" , function(){
+    var socket = io(),
+        progression = $(".progression"),
+        picture = $(".picture");
+    $("#sendUrl").on("click", function(event){
+      // Block form & stop event propagation to children
+      event.preventDefault();
+      event.stopPropagation();
+      socket.emit("url", { link : $("#dlink").val(), format : $("input[name='format']:checked").val()})
+    });
+    socket.on('update', function (data) {
+      console.log("Message : " , data);
+      if(data.error){
+        $("#errorWindow").text(data.error);
+        setTimeout(function(){
+          $("#errorWindow").text();
+        },4500);
+      }
+      if(data.info){
+        if($(".picture").hasClass("hide")){
+          $(".picture").removeClass("hide");
+        }
+        $(".picture").attr("src" , data.info.image);
+        $(".message").text(data.info.message);
+        Materialize.toast(data.info.toast, 4500, 'rounded');
+      }
+      if(data.toast){
+          Materialize.toast(data.toast, 4500, 'rounded');
+      }
+      if (data.progress){
+        if(progression.hasClass("hide")){
+          progression.removeClass("hide");
+        }
+        if(data.progress === "start"){
+          $(".progressElement").addClass("indeterminate");
+        }
+        else{
+          $(".progressElement").addClass("determinate")
+          $(".progressElement").css("width" , data.progress);
+          $(".progressText").text(data.progress);
+        }
 
-  socket.on('update', function (data) {
-    console.log("Message : " , data);
-    if(data.info){
-      if($(".picture").hasClass("hide")){
-        $(".picture").removeClass("hide");
       }
-      $(".picture").attr("src" , data.info.image);
-      $(".message").text(data.info.message);
-      Materialize.toast(data.info.toast, 4500, 'rounded');
-    }
-    if(data.toast){
-        Materialize.toast(data.toast, 4500, 'rounded');
-    }
-    if (data.progress){
-      if(progression.hasClass("hide")){
-        progression.removeClass("hide");
-      }
-      if(data.progress === "start"){
-        $(".progressElement").addClass("indeterminate");
-      }
-      else{
-        $(".progressElement").addClass("determinate")
-        $(".progressElement").css("width" , data.progress);
-        $(".progressText").text(data.progress);
-      }
-
-    }
+    });
   });
 </script>
 

@@ -56,7 +56,12 @@ io.on('connection', function (socket) {
   //   delete clients[socket.handshake.sessionID];
   // });
   socket.on("url", function(info){
-    console.log("info : ", info);
+    if(!(info.link && info.link.indexOf("http://pluzz.francetv.fr/videos/") > -1)){
+      obj.error = "Ceci n'est pas une URL valide , elle doit être du type 'http://pluzz.francetv.fr ' "
+      //console.error(kuler("Une mauvaise url a été transmise" , "red"));
+      socket.emit("update", obj)
+      return;
+    }
   })
 });
 
