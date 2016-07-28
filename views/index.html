@@ -39,7 +39,7 @@
         </div>
 
       
-          <form id="form" class="col s6 offset-s3" action="/" method="POST">
+          <form id="form" class="col s6 offset-s3" action="/">
             <div class="row">
               <div class="input-field">
                 <i class="material-icons prefix">input</i>
@@ -56,7 +56,7 @@
               </div>
             </div>
             <div class="row bouttonTelechargement">
-                <button class="btn waves-effect waves-light" type="submit" name="action">Télécharger
+                <button id="sendUrl" class="btn waves-effect waves-light" type="submit" name="action">Télécharger
                   <i class="material-icons right">send</i>
                 </button>
               </div>
@@ -125,9 +125,16 @@
 <script src="public/js/socket-io.js"></script>
 <!-- Socketio pour mettre à jour le site sans rechargement -->
 <script>
-  var socket = io.connect('http://localhost:3000'),
+  var socket = io(),
       progression = $(".progression"),
       picture = $(".picture");
+
+  $("#sendUrl").on("click", function(event){
+    // Block form & stop event propagation to children
+    event.preventDefault();
+    event.stopPropagation();
+    socket.emit("url", { link : $("#dlink").val(), format : $("input[name='format']:checked").val()})
+  })
 
   socket.on('update', function (data) {
     console.log("Message : " , data);

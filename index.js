@@ -11,12 +11,12 @@ var express = require('express'), // Surveille les connexion a l'appli
     nunjucks = require("nunjucks"),
     kuler    = require("kuler"),
     bodyParser = require('body-parser'),
-    session = require("express-session")({
+    /*session = require("express-session")({
       secret: "my-secret",
       resave: true,
       saveUninitialized: true
-    }),
-    sharedsession = require("express-socket.io-session"),
+    }),*/
+    //sharedsession = require("express-socket.io-session"),
     app = express(),
     server = require('http').Server(app),
     obj = {},
@@ -30,36 +30,34 @@ var express = require('express'), // Surveille les connexion a l'appli
 
 // Ecoute sur le port 3000
 server.listen(port , function(){
-    console.log(kuler('L\'application écoute le port 3000 ' , "green"));
+  console.log(kuler('L\'application écoute le port 3000 ' , "green"));
 })
-
 
 // L'app doit utiliser Le moteur de template Nunjucks
 nunjucks.configure('views', {
-    autoescape: true,
-    express: app
+  autoescape: true,
+  express: app
 });
 
-// Permet a express de lire JSONS
+// Permet a express de lire JSON
 app.use( bodyParser.json() );
 app.use(bodyParser.urlencoded({
   extended: true
 })); 
-app.use(session);
+//app.use(session);
 
 // Indique que le dossier public est accessible
 app.use("/public", express.static(__dirname + '/public'));
-
-
-io.use(sharedsession(session));
-
+//io.use(sharedsession(session));
 // On save les clients
 io.on('connection', function (socket) {
-  clients[socket.handshake.sessionID] = socket;
   socket.emit("update" , "Vous êtes connecté par socket.io");
-  socket.on('disconnect', function() {
-    delete clients[socket.handshake.sessionID];
-  });
+  // socket.on('disconnect', function() {
+  //   delete clients[socket.handshake.sessionID];
+  // });
+  socket.on("url", function(info){
+    console.log("info : ", info);
+  })
 });
 
 // Ecoute si quelqu'un arrive sur la page d'accueil en mode GET (normal)
@@ -67,27 +65,26 @@ app.get('/', function (req, res) {
   res.render("index.html");
 });
 
-
 // Ecoute si quelqu'un envoie quelque chose en mode POST
-app.post('/', function (req, res) {
+// app.post('/', function (req, res) {
 
-  // Si le lien PLUZZ n'est pas envoyé OU s'il n'a pas le bon format
-  if(!(req.body.dlink && req.body.dlink.indexOf("http://pluzz.francetv.fr/videos/") > -1)){
-    obj.error = "Ceci n'est pas une URL valide , elle doit être du type 'http://pluzz.francetv.fr ' "
-    console.error(kuler("Une mauvaise url a été transmise" , "red"));
-    res.render("index.html" , obj);
-    return;
-  }
-  res.render("index.html" , function(){
-    io.sockets.emit('update', { progress: "start" });
-  });
-  dlink = req.body.dlink;
-  format = req.body.format;
-  format = (format && (format === "mp3" ||  format === "avi")) ? format : "avi";
+//   // Si le lien PLUZZ n'est pas envoyé OU s'il n'a pas le bon format
+//   if(!(req.body.dlink && req.body.dlink.indexOf("http://pluzz.francetv.fr/videos/") > -1)){
+//     obj.error = "Ceci n'est pas une URL valide , elle doit être du type 'http://pluzz.francetv.fr ' "
+//     console.error(kuler("Une mauvaise url a été transmise" , "red"));
+//     res.render("index.html" , obj);
+//     return;
+//   }
+//   res.render("index.html" , function(){
+//     io.sockets.emit('update', { progress: "start" });
+//   });
+//   dlink = req.body.dlink;
+//   format = req.body.format;
+//   format = (format && (format === "mp3" ||  format === "avi")) ? format : "avi";
   
-  // Si tout es bon on lance les fonctions getID,getInfo,getVideo
-  lauchTraitement(dlink, format, res, io);
-});
+//   // Si tout es bon on lance les fonctions getID,getInfo,getVideo
+//   lauchTraitement(dlink, format, res, io);
+// });
 
 var lauchTraitement = function(url,format,res,io){
 
