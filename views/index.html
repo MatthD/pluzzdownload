@@ -135,7 +135,7 @@
       if(data.error){
         $("#errorWindow").text(data.error);
         setTimeout(function(){
-          $("#errorWindow").text();
+          $("#errorWindow").text("");
         },4500);
       }
       if(data.info){

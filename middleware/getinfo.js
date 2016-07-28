@@ -7,7 +7,7 @@ var request = require('request-promise'),
     kuler = require("kuler"),
     obj = {};
 
-obj.get = function(id,res,io,callback) {
+obj.get = function(id,socket,callback) {
   var json_url = "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=" + id + "&catalogue=Pluzz&callback=webserviceCallback_" + id,
       pattern = /\((.+?)\)/g,
       match,
@@ -19,29 +19,23 @@ obj.get = function(id,res,io,callback) {
           'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:19.0) Gecko/20100101 Firefox/19.0'
         }
       };
-
   // Téléchargement du fichier JSON
   request(options)
   .then(function (body) {
-
     //Retourne seulement entre {} sans () , objet propre
     while (match = pattern.exec(body)) {
       matches.push(match[1]);
     }
-
     // Definit les infos depuis JSON :
     json_emission = JSON.parse(matches);
-
     console.log("info : ", json_emission);
-
     //Si le json est video
     if(!(json_emission ||  json_emission["code_programme"] ||
       json_emission["sous_titre"] || json_emission["diffusion"]["date_debut"])){
-
-      obj.error = "Les infos de la vidéo ne sont pas récupérables";
-      console.error(kuler("Impossible de récupérer le JSON de :  " + id  , "red"));
-      res.render("index.html" , obj);
-      return;
+        obj.error = "Les infos de la vidéo ne sont pas récupérables";
+        console.error(kuler("Impossible de récupérer le JSON de :  " + id  , "red"));
+        socket.emit("update",obj);
+        return;
     }
 
     json_info.image = "http://webservices.francetelevisions.fr" + json_emission["image"];
@@ -51,7 +45,6 @@ obj.get = function(id,res,io,callback) {
     json_info.sous_titre_emission = json_emission["sous_titre"].replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace( / /g , '.');
     json_info.date_emission = json_emission["diffusion"]["date_debut"].split(" ")[0].replace( / |\//g , '.');
     json_info.filename_emission = json_info.titre_emission + '-' + json_info.date_emission + "-" + json_info.sous_titre_emission ;
-    
     // On va chercher le fichier m3u8 pour avconv ou ffmpeg qui construira la video a partir de ca
     json_info.m3u = JSONSelect.match(":has(:root > .format:val(\"m3u8-download\")) " , json_emission)[0].url;
 
@@ -59,7 +52,7 @@ obj.get = function(id,res,io,callback) {
     if(!json_info.m3u){
       obj.error = "Le lien de la vidéo n'a pu être trouvé :(";
       console.error(kuler("Impossible de récupérer le m3u de la vidéo :  " + json_info  , "red"));
-      res.render("index.html" , obj);
+      socket.emit("update",obj);
       return;
     }
 
@@ -76,36 +69,34 @@ obj.get = function(id,res,io,callback) {
     .then(function(body){
       //récupére la derniere ligne -> resolution la plus élevée.
       json_info.m3uHD = body.split("\n");
-
       //Garde que les liens
       for (var i = 0; i < json_info.m3uHD.length ; i++) {
         if(json_info.m3uHD[i].indexOf("http://") < 0){
           json_info.m3uHD.splice(i,1);
         }
       };
-
       // S'il ne reste pas de lien , la HD n'est pas dispo
       if(json_info.m3uHD.length < 1){
         obj.error = "Le lien n'est pas disponible en HD , traitement en SD ... ";
-        console.info(kuler("Le m3uHD n'est pas disponible  " + json_info.m3uHD  , "red"));
-        // res.render("index.html" , obj);
+        socket.emit("update",obj);
         return;
       }
-
       //Selection dernier lien correspondant à la + haute résolution
       json_info.m3uHD = json_info.m3uHD[json_info.m3uHD.length-1]
       message =  json_info.titre_complet + " / " + json_info.sous_titre_complet ;
-      io.sockets.emit('update', { info: { message :message , image: json_info.image  , toast : "Téléchargement des infos"}});
+      socket.emit('update', { info: { message :message , image: json_info.image  , toast : "Téléchargement des infos"}});
       callback(json_info);
     })
     .catch(function(err){
       // m3u8HD n'est pas téléchargeable
-      console.error(kuler("Erreur lors de la récupération de la meilleure résolution: " + err , "red"));
+      obj.error = "Erreur lors de la récupération de la meilleure résolution: " + err ;
+      socket.emit("update",obj);
     })
   })
   .catch(function(err){
     //JSON n'est pas télécheargeable
-    console.error(kuler("Impossible de récupérer les infos , erreur : " + err , "red"));
+    obj.error = "Impossible de récupérer les infos , erreur : " + err ;
+    socket.emit("update",obj);
   })
 
 }; 

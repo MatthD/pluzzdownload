@@ -23,12 +23,8 @@ var ffmpeg = require("fluent-ffmpeg"),
 ffmpeg.setFfmpegPath(ffmpegpath);
 ffmpeg.setFfprobePath(ffprobPath);
 
-obj.get = function(info,format,res,io,clients,callback){
-
+obj.get = function(info,format,socket,callback){
   extension = format;
-
-  //console.log("Lien m3u8 " , info.m3uHD);
-
   // Creation du repertoire info.destination s'il il n'existe pas
   mkdirp(info.destination, function (err) {
     if (err) {
@@ -54,7 +50,7 @@ obj.get = function(info,format,res,io,clients,callback){
       timeDone = (+t[0]) * 60 * 60 + (+t[1]) * 60 + (+t[2]);
       //process.stdout.write(kuler(" ... Téléchargement " + progress.percent + "% \r" , "orange"));
       progress = progress.percent ? (progress.percent).toFixed(2) + "%" : ((timeDone/time)*100).toFixed(2) + "%";
-      io.sockets.emit('update', { progress: progress });
+      socket.emit('update', { progress: progress });
     })
     .on('end', function() {
       io.sockets.emit('update', { toast: "Vidéo Récupérée & Convertie" });
