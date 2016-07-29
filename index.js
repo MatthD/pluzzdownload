@@ -62,7 +62,8 @@ io.on('connection', function (socket) {
   });
   app.post('/', function (req, res) {
     // Si le lien PLUZZ n'est pas envoyé OU s'il n'a pas le bon format
-    if(!(req.body.dlink && req.body.dlink.indexOf("http://pluzz.francetv.fr/videos/") > -1)){
+    if(!(req.body.dlink && (req.body.dlink.indexOf("pluzz.francetv.fr/videos/") > -1 
+      || req.body.dlink.indexOf("canalplus.fr/") ))){
       obj.error = "Ceci n'est pas une URL valide , elle doit être du type 'http://pluzz.francetv.fr ' "
       console.error(kuler("Une mauvaise url a été transmise" , "red"));
       socket.emit("update",obj);
