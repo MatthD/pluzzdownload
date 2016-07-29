@@ -33,11 +33,12 @@
             <div class="progressElement"></div>
           </div>
         </div>
-          <form id="form" class="col s6 offset-s3" action="/">
+          <form id="form" target="_blank" class="col s6 offset-s3" action="/" method="POST">
             <div class="row">
               <div class="input-field">
                 <i class="material-icons prefix">input</i>
                 <input id="dlink" type="url" name="dlink" class="validate" required>
+                <input id="id" type="hidden" name="id">
                 <label for="dlink">Lien vidéo</label>
               </div>
                <!-- options formats de conversion -->
@@ -47,6 +48,8 @@
                 <label for="formatAVI">.avi</label>
                 <input class="with-gap" name="format" value="mp3" type="radio" id="formatMP3"/>
                 <label for="formatMP3">.mp3</label>
+                <input class="with-gap" name="format" value="h264" type="radio" id="formatH264"/>
+                <label for="formatH264">.mp4</label>
               </div>
             </div>
             <div class="row bouttonTelechargement">
@@ -112,24 +115,28 @@
   </footer>
   <!-- footer end -->
 </body>
-
 <!-- Jquery & Materialize framework -->
 <script src="public/js/jquery-2.js"></script>
 <script src="public/js/materialize.min.js"></script>
 <script src="public/js/socket-io.js"></script>
 <!-- Socketio pour mettre à jour le site sans rechargement -->
 <script>
-
+  function generateUUID() {
+    var d = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (d + Math.random()*16)%16 | 0;
+        d = Math.floor(d/16);
+        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+  };
   $(document).on("ready" , function(){
-    var socket = io(),
+    var uuid = generateUUID(),
+        socket = io(),
         progression = $(".progression"),
         picture = $(".picture");
-    $("#sendUrl").on("click", function(event){
-      // Block form & stop event propagation to children
-      event.preventDefault();
-      event.stopPropagation();
-      socket.emit("url", { link : $("#dlink").val(), format : $("input[name='format']:checked").val()})
-    });
+    socket.emit("id", uuid);
+    $("#id").val(uuid);
     socket.on('update', function (data) {
       console.log("Message : " , data);
       if(data.error){

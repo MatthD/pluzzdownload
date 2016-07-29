@@ -23,23 +23,28 @@ var ffmpeg = require("fluent-ffmpeg"),
 ffmpeg.setFfmpegPath(ffmpegpath);
 ffmpeg.setFfprobePath(ffprobPath);
 
-obj.get = function(info,format,socket,callback){
+obj.get = function(info,format,res,socket,callback){
   extension = format;
   // Creation du repertoire info.destination s'il il n'existe pas
   mkdirp(info.destination, function (err) {
     if (err) {
+      obj.error = "Problème lors de la création du repertoire : ";
+      socket.emit("update",obj);
       console.error(kuler("Problème lors de la création du repertoire : " + err , "red"))
     }
   });
-
   /*--------------*/
   /*    FFMPEG    */
   /*--------------*/
-
   ffmpeg.ffprobe(info.m3uHD, function(err, metadata) {
     time = metadata.format.duration;
     // Envoi du fichier
     res.attachment(info.filename_emission + "." + extension);
+    // var ffstream = proc.pipe();
+    // ffstream.on('data', function(chunk) {
+    //   socket.emit('video', { buffer: chunk });
+    //   //console.log('ffmpeg just wrote ' + chunk.length + ' bytes');
+    // });
     proc();
   });
 
@@ -48,22 +53,21 @@ obj.get = function(info,format,socket,callback){
     .on('progress' , function(progress){
       var t = progress.timemark.split(':');
       timeDone = (+t[0]) * 60 * 60 + (+t[1]) * 60 + (+t[2]);
-      //process.stdout.write(kuler(" ... Téléchargement " + progress.percent + "% \r" , "orange"));
       progress = progress.percent ? (progress.percent).toFixed(2) + "%" : ((timeDone/time)*100).toFixed(2) + "%";
       socket.emit('update', { progress: progress });
     })
     .on('end', function() {
-      io.sockets.emit('update', { toast: "Vidéo Récupérée & Convertie" });
-      io.sockets.emit('update', { progress: "100%" });
+      socket.emit('update', { toast: "Vidéo Récupérée & Convertie" });
+      socket.emit('update', { progress: "100%" });
     })
     .on('error', function(err) {
-      obj.error = 'an error happened: ' + err;
+      obj.error = 'Une erreur s\'est produite pendant la conversion: ' + err;
       console.error(obj.error);
-      res.render("index.html" , obj.error);
+      socket.emit('update',obj)
     })
     .preset(format)
-    .pipe(res);
+    .pipe(res)
     };
-  }
+}
 
 module.exports = obj;
