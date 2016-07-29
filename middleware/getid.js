@@ -12,7 +12,7 @@ obj.get = function(url,socket,callback) {
       proxy,
       options;
 
-  if(process.env.HTTP_PROXY){
+  if(process.env.http_proxy){
     proxy = process.env.HTTP_PROXY;
     options = {
       url : url ,
@@ -26,7 +26,7 @@ obj.get = function(url,socket,callback) {
   }
   console.log(options);
   // Recherche du noeuf contenant l'attribut par jQuery , puis récupére la valeur de l'attribut
-  scrap({url : url , proxy : proxy}, function(err, $) {
+  scrap(options, function(err, $) {
     id = $("div[data-diffusion]").first().attr("data-diffusion");
     // Si on ne trouve pas l'ID de la video
     if (!id) {

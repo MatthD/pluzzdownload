@@ -71,7 +71,7 @@ io.on('connection', function (socket) {
     dlink = req.body.dlink;
     id = clients[req.body.id] || socket;
     format = req.body.format;
-    format = (format && (format === "mp3" ||  format === "avi" || format === "h264")) ? format : "avi";
+    format = (format && (format === "mp3" ||  format === "avi" || format === "mp4")) ? format : "avi";
     // Si tout es bon on lance les fonctions getID,getInfo,getVideo
     lauchTraitement(dlink, format, res, id);
   });

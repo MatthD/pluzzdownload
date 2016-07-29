@@ -24,7 +24,15 @@ ffmpeg.setFfmpegPath(ffmpegpath);
 ffmpeg.setFfprobePath(ffprobPath);
 
 obj.get = function(info,format,res,socket,callback){
-  extension = format;
+  //console.log("format : ", format);
+  switch(format){
+    case "mp4":
+      extension = "mp4";
+      break;
+    default:
+      extension = format;
+      break;
+  }
   // Creation du repertoire info.destination s'il il n'existe pas
   mkdirp(info.destination, function (err) {
     if (err) {
@@ -40,11 +48,6 @@ obj.get = function(info,format,res,socket,callback){
     time = metadata.format.duration;
     // Envoi du fichier
     res.attachment(info.filename_emission + "." + extension);
-    // var ffstream = proc.pipe();
-    // ffstream.on('data', function(chunk) {
-    //   socket.emit('video', { buffer: chunk });
-    //   //console.log('ffmpeg just wrote ' + chunk.length + ' bytes');
-    // });
     proc();
   });
 
@@ -60,9 +63,9 @@ obj.get = function(info,format,res,socket,callback){
       socket.emit('update', { toast: "Vidéo Récupérée & Convertie" });
       socket.emit('update', { progress: "100%" });
     })
-    .on('error', function(err) {
+    .on('error', function(err,err2,err3) {
       obj.error = 'Une erreur s\'est produite pendant la conversion: ' + err;
-      console.error(obj.error);
+      console.error(obj.error + err2 + err3);
       socket.emit('update',obj)
     })
     .preset(format)

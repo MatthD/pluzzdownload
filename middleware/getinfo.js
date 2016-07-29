@@ -56,6 +56,7 @@ obj.get = function(id,socket,callback) {
       return;
     }
 
+    //console.log("json_info", json_info)
     // Télécharge le m3u pour récuperer le lien HD 
     // (m3u est un fichier comprenant plusieurs résolutions)
     options = {
