@@ -138,12 +138,9 @@
     socket.emit("id", uuid);
     $("#id").val(uuid);
     socket.on('update', function (data) {
-      console.log("Message : " , data);
+      //console.log("Message : " , data);
       if(data.error){
         $("#errorWindow").text(data.error);
-        setTimeout(function(){
-          $("#errorWindow").text("");
-        },4500);
       }
       if(data.info){
         if($(".picture").hasClass("hide")){
@@ -151,10 +148,10 @@
         }
         $(".picture").attr("src" , data.info.image);
         $(".message").text(data.info.message);
-        Materialize.toast(data.info.toast, 4500, 'rounded');
+        Materialize.toast(data.info.toast, 9000, 'rounded');
       }
       if(data.toast){
-          Materialize.toast(data.toast, 4500, 'rounded');
+          Materialize.toast(data.toast, 9000, 'rounded');
       }
       if (data.progress){
         if(progression.hasClass("hide")){
@@ -171,6 +168,9 @@
 
       }
     });
+    $("#sendUrl").on("click", function(){
+      $("#errorWindow").text("");
+    })
   });
 </script>
 

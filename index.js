@@ -63,7 +63,7 @@ io.on('connection', function (socket) {
   app.post('/', function (req, res) {
     // Si le lien PLUZZ n'est pas envoyé OU s'il n'a pas le bon format
     if(!(req.body.dlink && (req.body.dlink.indexOf("pluzz.francetv.fr/videos/") > -1 
-      || req.body.dlink.indexOf("canalplus.fr/") ))){
+      || req.body.dlink.indexOf("canalplus.fr/") > -1 ))){
       obj.error = "Ceci n'est pas une URL valide , elle doit être du type 'http://pluzz.francetv.fr ' "
       console.error(kuler("Une mauvaise url a été transmise" , "red"));
       socket.emit("update",obj);
@@ -87,15 +87,16 @@ var lauchTraitement = function(url,format,res,socket){
   // Force url à String
   url = url.toString();
   // Recupération de l'ID
-  getId.get(url, socket, function(id){
+  getId.get(url, socket, function(id,type){
     console.log("ID vidéo : " , kuler(id , "orange"));
+    console.log("Type: " , kuler(type , "orange"));
     // Recupération des Infos (titre , date , url m3U8 ...)
-    getInfo.get(id, socket, function(info){
+    getInfo.get(id, type, socket, function(info){
       info.destination = temp_folder;
       // Téléchargement de la video
-      getVideo.get(info, format, res, socket, function(){
-        //console.log(kuler("Vidéo téléchargée avec succès ! " , "green"));
-      });
+      // getVideo.get(info, format, res, socket, function(){
+      //   //console.log(kuler("Vidéo téléchargée avec succès ! " , "green"));
+      // });
     });
   });
 };

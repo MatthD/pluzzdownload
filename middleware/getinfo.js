@@ -7,8 +7,10 @@ var request = require('request-promise'),
     kuler = require("kuler"),
     obj = {};
 
-obj.get = function(id,socket,callback) {
-  var json_url = "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=" + id + "&catalogue=Pluzz&callback=webserviceCallback_" + id,
+obj.get = function(id,type,socket,callback) {
+  var json_url = (type === "pluzz") 
+      ? "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=" + id + "&catalogue=Pluzz&callback=webserviceCallback_" + id
+      : "http://service.canal-plus.com/video/rest/getVideos/cplus/" + id + "?format=json",
       pattern = /\((.+?)\)/g,
       match,
       matches = [],
@@ -19,6 +21,7 @@ obj.get = function(id,socket,callback) {
           'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:19.0) Gecko/20100101 Firefox/19.0'
         }
       };
+
   // Téléchargement du fichier JSON
   request(options)
   .then(function (body) {
@@ -27,9 +30,10 @@ obj.get = function(id,socket,callback) {
       matches.push(match[1]);
     }
     // Definit les infos depuis JSON :
-    json_emission = JSON.parse(matches);
-    //console.log("info : ", json_emission);
+    json_emission = (type === "pluzz") ? JSON.parse(matches) : body;
+    console.log("info : ", json_emission);
     //Si le json est video
+    //console.log(json_emission);
     if(!(json_emission ||  json_emission["code_programme"] ||
       json_emission["sous_titre"] || json_emission["diffusion"]["date_debut"])){
         obj.error = "Les infos de la vidéo ne sont pas récupérables";
@@ -91,15 +95,16 @@ obj.get = function(id,socket,callback) {
     .catch(function(err){
       // m3u8HD n'est pas téléchargeable
       obj.error = "Erreur lors de la récupération de la meilleure résolution: " + err ;
+      console.error(err);
       socket.emit("update",obj);
     })
   })
   .catch(function(err){
     //JSON n'est pas télécheargeable
     obj.error = "Impossible de récupérer les infos , erreur : " + err ;
+    console.error(err);
     socket.emit("update",obj);
   })
-
 }; 
 
 module.exports = obj;
