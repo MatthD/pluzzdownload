@@ -30,27 +30,41 @@ obj.get = function(id,type,socket,callback) {
       matches.push(match[1]);
     }
     // Definit les infos depuis JSON :
-    json_emission = (type === "pluzz") ? JSON.parse(matches) : body;
+    json_emission = (type === "pluzz") ? JSON.parse(matches) : JSON.parse(body);
     console.log("info : ", json_emission);
     //Si le json est video
-    //console.log(json_emission);
-    if(!(json_emission ||  json_emission["code_programme"] ||
-      json_emission["sous_titre"] || json_emission["diffusion"]["date_debut"])){
-        obj.error = "Les infos de la vidéo ne sont pas récupérables";
-        console.error(kuler("Impossible de récupérer le JSON de :  " + id  , "red"));
-        socket.emit("update",obj);
-        return;
+    if(type === "pluzz"){
+      if(!(json_emission ||  json_emission["code_programme"] ||
+        json_emission["sous_titre"] || json_emission["diffusion"]["date_debut"])){
+          obj.error = "Les infos de la vidéo ne sont pas récupérables";
+          console.error(kuler("Impossible de récupérer le JSON de :  " + id  , "red"));
+          socket.emit("update",obj);
+          return;
+      }
+      json_info.image = "http://webservices.francetelevisions.fr" + json_emission["image"];
+      json_info.titre_complet = json_emission["titre"];
+      json_info.sous_titre_complet = json_emission["sous_titre"];
+      json_info.titre_emission = json_emission["code_programme"].replace( /_/g , '.');
+      json_info.sous_titre_emission = json_emission["sous_titre"].replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace( / /g , '.');
+      json_info.date_emission = json_emission["diffusion"]["date_debut"].split(" ")[0].replace( / |\//g , '.');
+      json_info.filename_emission = json_info.titre_emission + '-' + json_info.date_emission + "-" + json_info.sous_titre_emission ;
+      // On va chercher le fichier m3u8 pour avconv ou ffmpeg qui construira la video a partir de ca
+      json_info.m3u = JSONSelect.match(":has(:root > .format:val(\"m3u8-download\")) " , json_emission)[0].url;
     }
+    else if(type === "canal"){
+      json_info.image = json_emission["MEDIA"]["IMAGES"]["GRAND"];
+      json_info.titre_complet = json_emission["INFOS"]["TITRAGE"]["TITRE"];
+      json_info.sous_titre_complet = json_emission["INFOS"]["TITRAGE"]["SOUS_TITRE"];
+      
+      json_info.titre_emission = json_info.titre_complet.replace(/[&\/\\#,+()$~%.'":*?<>{}-]/g, '').replace( / /g , '.').replace( ".." , '.');
+      json_info.sous_titre_emission = json_info.sous_titre_complet.replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace( / /g , '.');
+      
+      json_info.date_emission = json_emission["INFOS"]["PUBLICATION"]["DATE"].replace( / |\//g , '.');
+      json_info.filename_emission = json_info.titre_emission + '-' + json_info.date_emission + "-" + json_info.sous_titre_emission ;
+      json_info.m3u = json_emission["MEDIA"]["VIDEOS"]["HLS"];
 
-    json_info.image = "http://webservices.francetelevisions.fr" + json_emission["image"];
-    json_info.titre_complet = json_emission["titre"];
-    json_info.sous_titre_complet = json_emission["sous_titre"];
-    json_info.titre_emission = json_emission["code_programme"].replace( /_/g , '.');
-    json_info.sous_titre_emission = json_emission["sous_titre"].replace(/[&\/\\#,+()$~%.'":*?<>{}]/g, '').replace( / /g , '.');
-    json_info.date_emission = json_emission["diffusion"]["date_debut"].split(" ")[0].replace( / |\//g , '.');
-    json_info.filename_emission = json_info.titre_emission + '-' + json_info.date_emission + "-" + json_info.sous_titre_emission ;
-    // On va chercher le fichier m3u8 pour avconv ou ffmpeg qui construira la video a partir de ca
-    json_info.m3u = JSONSelect.match(":has(:root > .format:val(\"m3u8-download\")) " , json_emission)[0].url;
+    }
+    //console.log(json_info.filename_emission)
 
     // Si le lien m3U n'est pas dispo
     if(!json_info.m3u){

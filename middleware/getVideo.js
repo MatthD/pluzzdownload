@@ -29,6 +29,9 @@ obj.get = function(info,format,res,socket,callback){
     case "mp4":
       extension = "mp4";
       break;
+    case "mkv":
+      extension = "mkv";
+      break;
     default:
       extension = format;
       break;
