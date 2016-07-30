@@ -1,7 +1,7 @@
 # pluzzdownload
 Télécharger des videos FranceTv (Pluzz) & Canal+
 
-[![DEMO](https://www.herokucdn.com/deploy/button.svg)](plluzzdownload.herokuapp.com)
+[![DEMO](https://www.herokucdn.com/deploy/button.svg)](http://plluzzdownload.herokuapp.com)
 
 Application web deployable sur un serveur ou en local.
 Ecrite en Node.js avec socket.io elle permet de télécharger les videos des sites web  pluzz & canal+.
