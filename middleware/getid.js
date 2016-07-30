@@ -6,7 +6,7 @@ var scrap = require('scrap'),
     kuler = require("kuler"),
     obj   = {};
 
-obj.get = function(url,socket,callback) {
+obj.get = function(url,socket,res,callback) {
   var id,
       type,
       message,
@@ -27,6 +27,12 @@ obj.get = function(url,socket,callback) {
   }
   // Recherche du noeuf contenant l'attribut par jQuery , puis récupére la valeur de l'attribut
   scrap(options, function(err, $) {
+    if(err){
+      console.error("Cannot scrap website");
+      socket.emit('update',{error : "cannot scrap website"});
+      res.send("<script>window.close()</script>");
+      return;
+    }
     if(url.indexOf("pluzz.francetv.fr/videos/") > -1){  
       id = $("div[data-diffusion]").first().attr("data-diffusion");
       type = "pluzz";
@@ -44,6 +50,7 @@ obj.get = function(url,socket,callback) {
       obj.error = "Identifiant de video introuvable , verifiez le lien svp"
       console.error(kuler("L'identifant de l'url " + url + " n'a pas été trouvé " , "red"));
       socket.emit("update", obj);
+      res.send("<script>window.close()</script>");
       return;
     }
     message = "Identifiant de vidéo récupéré ... ";

@@ -1,5 +1,5 @@
 /*  
-* Script de récupération d'une video Pluzz
+* Script de récupération d'une video Pluzz & Canal+
 * Author : MattD & nCombo
 */
 
@@ -52,13 +52,12 @@ app.use("/public", express.static(__dirname + '/public'));
 //io.use(sharedsession(session));
 // On save les clients
 io.on('connection', function (socket) {
-  console.log("SOCKET CONNECTED!");
   socket.emit("update" , "Vous êtes connecté par socket.io");
   socket.on("id",function(id){
     clients[id] = socket;
   })
   socket.on("disconnect", function (socket) {
-    console.log("SOCKET DISCONNECTED!");
+    console.log(clients);
   });
   app.post('/', function (req, res) {
     // Si le lien PLUZZ n'est pas envoyé OU s'il n'a pas le bon format
@@ -87,11 +86,9 @@ var lauchTraitement = function(url,format,res,socket){
   // Force url à String
   url = url.toString();
   // Recupération de l'ID
-  getId.get(url, socket, function(id,type){
-    console.log("ID vidéo : " , kuler(id , "orange"));
-    console.log("Type: " , kuler(type , "orange"));
+  getId.get(url, socket, res, function(id,type){
     // Recupération des Infos (titre , date , url m3U8 ...)
-    getInfo.get(id, type, socket, function(info){
+    getInfo.get(id, type, socket, res, function(info){
       info.destination = temp_folder;
       // Téléchargement de la video
       getVideo.get(info, format, res, socket, function(){

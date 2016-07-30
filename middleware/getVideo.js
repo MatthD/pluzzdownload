@@ -1,5 +1,5 @@
 /*
-* Télécharge les videos de PLUZZ
+* Télécharge les videos de PLUZZ & canal
 */
 
 var ffmpeg = require("fluent-ffmpeg"),
@@ -35,15 +35,7 @@ obj.get = function(info,format,res,socket,callback){
     default:
       extension = format;
       break;
-  }
-  // Creation du repertoire info.destination s'il il n'existe pas
-  mkdirp(info.destination, function (err) {
-    if (err) {
-      obj.error = "Problème lors de la création du repertoire : ";
-      socket.emit("update",obj);
-      console.error(kuler("Problème lors de la création du repertoire : " + err , "red"))
-    }
-  });
+  } 
   /*--------------*/
   /*    FFMPEG    */
   /*--------------*/
@@ -69,7 +61,8 @@ obj.get = function(info,format,res,socket,callback){
     .on('error', function(err,err2,err3) {
       obj.error = 'Une erreur s\'est produite pendant la conversion: ' + err;
       console.error(obj.error + err2 + err3);
-      socket.emit('update',obj)
+      socket.emit('update',obj);
+      res.end();
     })
     .preset(format)
     .pipe(res)

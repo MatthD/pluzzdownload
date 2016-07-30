@@ -7,7 +7,7 @@ var request = require('request-promise'),
     kuler = require("kuler"),
     obj = {};
 
-obj.get = function(id,type,socket,callback) {
+obj.get = function(id,type,socket,res,callback) {
   var json_url = (type === "pluzz") 
       ? "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=" + id + "&catalogue=Pluzz&callback=webserviceCallback_" + id
       : "http://service.canal-plus.com/video/rest/getVideos/cplus/" + id + "?format=json",
@@ -111,6 +111,7 @@ obj.get = function(id,type,socket,callback) {
       obj.error = "Erreur lors de la récupération de la meilleure résolution: " + err ;
       console.error(err);
       socket.emit("update",obj);
+      res.send("<script>window.close()</script>");
     })
   })
   .catch(function(err){
@@ -118,6 +119,7 @@ obj.get = function(id,type,socket,callback) {
     obj.error = "Impossible de récupérer les infos , erreur : " + err ;
     console.error(err);
     socket.emit("update",obj);
+    res.send("<script>window.close()</script>");
   })
 }; 
 
