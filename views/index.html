@@ -70,7 +70,7 @@
       <div id="row1Footer" class="row">
         <div id="about" class="col l6 s12">
           <h5 class="white-text">A propos</h5>
-          <p class="grey-text text-lighten-4">PluzzD permet de télécharer des vidéos de <a href="http://www.francetv.fr/">FranceTV</a>
+          <p class="grey-text text-lighten-4">PluzzD permet de télécharer des vidéos de <a href="http://www.francetv.fr/">FranceTV</a> & de <a href="http://www.canalplus.fr/">Canal+</a>
             <ul id="ftv_logos">
               <li>
               <a href="http://www.la1ere.fr"><img src="public/ftvimages/F1.png"alt=""></a>
@@ -89,6 +89,9 @@
             </li>
             <li>
               <a href="http://www.france5.fr"><img src="public/ftvimages/FO.png" alt=""></a>
+            </li>
+            <li>
+              <a href=""><img src="public/canalImages/logo.jpg"></a>
             </li>
             </ul>
           </p>
@@ -153,6 +156,14 @@
       if(data.toast){
           Materialize.toast(data.toast, 9000, 'rounded');
       }
+      if(data.type){
+        if(data.type === "canal"){
+          $("body").css("background","url(public/canalImages/canalfond.jpg)")
+        }
+        if(data.type === "pluzz"){
+          $("body").css("background","url(public/ftvimages/ftvfond.png)")
+        }
+      }
       if (data.progress){
         if(progression.hasClass("hide")){
           progression.removeClass("hide");
@@ -164,12 +175,16 @@
           $(".progressElement").addClass("determinate")
           $(".progressElement").css("width" , data.progress);
           $(".progressText").text(data.progress);
+          $(".progress").removeAttr("style");
+          $(".progressText").text("");
         }
 
       }
     });
     $("#sendUrl").on("click", function(){
       $("#errorWindow").text("");
+      $(".picture").attr('src','');
+      $('.message').text('');
     })
   });
 </script>

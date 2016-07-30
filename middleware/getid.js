@@ -30,11 +30,13 @@ obj.get = function(url,socket,callback) {
     if(url.indexOf("pluzz.francetv.fr/videos/") > -1){  
       id = $("div[data-diffusion]").first().attr("data-diffusion");
       type = "pluzz";
+      socket.emit("update", {type : "pluzz"});
       socket.emit('update', { toast : "Video Pluzz détectée" });
     }
     else if(url.indexOf("canalplus.fr/") > -1){
       id = $("a[data-vid]").first().attr("data-vid");
       type = "canal";
+      socket.emit("update", {type : "canal"});
       socket.emit('update', { toast : "Video Canal+ détectée" });
     }
     // Si on ne trouve pas l'ID de la video
